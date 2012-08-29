@@ -3,10 +3,9 @@ package simplehandlers
 
 import (
 	"net/http"
-	"strings"
 	"net/url"
+	"strings"
 )
-
 
 // Function returning a private handler which calls the extracts
 // the file extension from the path and adds it to the URL query params
@@ -43,4 +42,18 @@ func (f ErrorHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err := f(w, r); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+// This HTTP filter drops the URL query parameters on non GET requests.
+// This is for security as Go's net/http package form parsing does not
+// distinguish between URL query parameters and posted form parameters
+type URLQueryFilter struct {
+	handler http.Handler
+}
+
+func (h URLQueryFilter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		r.URL.RawQuery = ""
+	}
+	h.handler.ServeHTTP(w, r)
 }
