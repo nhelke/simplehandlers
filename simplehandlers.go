@@ -16,7 +16,7 @@ func ExtensionHandler(h http.Handler) extH {
 }
 
 type extH struct {
-	h http.Handler
+	http.Handler
 }
 
 func (h extH) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +29,7 @@ func (h extH) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			r.URL.Path += "/"
 		}
 	}
-	h.h.ServeHTTP(w, r)
+	h.Handler.ServeHTTP(w, r)
 }
 
 // HTTP HandlerFunc which returns an Error which is automatically converted
