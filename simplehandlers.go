@@ -7,19 +7,14 @@ import (
 	"strings"
 )
 
-// Function returning a private handler which calls the extracts
-// the file extension from the path and adds it to the URL query params
-// using the ":extension" key and then call the passed handler's ServeHTTP
-// function.
-func ExtensionHandler(h http.Handler) extH {
-	return extH{h}
-}
-
-type extH struct {
+// Handler which extracts the file extension from the path and adds it to
+// the URL query params using the ":extension" key and then call the passed
+// handler's ServeHTTP function.
+type ExtensionHandler struct {
 	http.Handler
 }
 
-func (h extH) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h ExtensionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := strings.TrimRight(r.URL.Path, "/")
 	trailingSlash := len(r.URL.Path) > len(path)
 	if dot := strings.LastIndex(path, "."); dot > 0 && strings.Index(path[dot:], "/") < 0 {
