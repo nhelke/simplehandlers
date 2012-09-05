@@ -43,12 +43,12 @@ func (f ErrorHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // This is for security as Go's net/http package form parsing does not
 // distinguish between URL query parameters and posted form parameters
 type URLQueryFilter struct {
-	handler http.Handler
+	http.Handler
 }
 
 func (h URLQueryFilter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		r.URL.RawQuery = ""
 	}
-	h.handler.ServeHTTP(w, r)
+	h.Handler.ServeHTTP(w, r)
 }
